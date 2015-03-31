@@ -51,6 +51,13 @@ public class KNN {
 			}
 		}
 		category = getCategory(queue); // category calculation method
+		System.out.print(testnode.getType() + "    ");
+		System.out.print(testnode.getLifeStyleString() + "    ");
+		System.out.print(testnode.getVacation() + "    ");
+		System.out.print(testnode.getEcredit() + "    ");
+		System.out.print(testnode.getSalary() + "    ");
+		System.out.print(testnode.getProperty() + "    ");
+		System.out.println(category);
 		return category;
 	}
 

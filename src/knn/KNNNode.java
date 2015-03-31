@@ -8,7 +8,7 @@ public class KNNNode {
 	private double salary;
 	private double property;
 	private String label;
-	private double similarity; //document the distance to curr test node
+	private double similarity; // document the distance to curr test node
 
 	public KNNNode(String type, String lifeStyle, int vacation, int ecredit,
 			double salary, double property, String label) {
@@ -28,7 +28,7 @@ public class KNNNode {
 	public double getSimilarity() {
 		return this.similarity;
 	}
-	
+
 	public void setType(String type) {
 		this.type = calType(type);
 	}
@@ -40,7 +40,7 @@ public class KNNNode {
 	public String getTypeString() {
 		return toType(this.type);
 	}
-	
+
 	public void setLifeStyle(String lifeStyle) {
 		this.lifeStyle = calLifeStyle(lifeStyle);
 	}
@@ -48,7 +48,7 @@ public class KNNNode {
 	public int getLifeStyle() {
 		return this.lifeStyle;
 	}
-	
+
 	public String getLifeStyleString() {
 		return toLifeStyle(this.lifeStyle);
 	}
@@ -94,18 +94,22 @@ public class KNNNode {
 	}
 
 	private int calType(String type) {
-		if (type.equals("student")) {
-			return 1; // change the number when doing calculation
-		} else if (type.equals("engineer")) {
-			return 2; // change the number when doing calculation
-		} else if (type.equals("librarian")) {
-			return 3; // change the number when doing calculation
-		} else if (type.equals("professor")) {
-			return 4; // change the number when doing calculation
-		} else if (type.equals("doctor")) {
-			return 5; // change the number when doing calculation
+		if (type != null) {
+			if (type.equals("student")) {
+				return 1; // change the number when doing calculation
+			} else if (type.equals("engineer")) {
+				return 2; // change the number when doing calculation
+			} else if (type.equals("librarian")) {
+				return 3; // change the number when doing calculation
+			} else if (type.equals("professor")) {
+				return 4; // change the number when doing calculation
+			} else if (type.equals("doctor")) {
+				return 5; // change the number when doing calculation
+			} else {
+				return 0;// When there is a bug;
+			}
 		} else {
-			return 0;// When there is a bug;
+			return 0;
 		}
 	}
 
@@ -126,16 +130,20 @@ public class KNNNode {
 	}
 
 	private int calLifeStyle(String lifeStyle) {
-		if (lifeStyle.equals("spend>saving")) {
-			return 1; // change the number when doing calculation
-		} else if (lifeStyle.equals("spend<saving")) {
-			return 2; // change the number when doing calculation
-		} else if (lifeStyle.equals("spend>>saving")) {
-			return 3; // change the number when doing calculation
-		} else if (lifeStyle.equals("spend<<saving")) {
-			return 4; // change the number when doing calculation
-		} else {
-			return 0;// When there is a bug;
+		if (lifeStyle != null) {
+			if (lifeStyle.equals("spend>saving")) {
+				return 1; // change the number when doing calculation
+			} else if (lifeStyle.equals("spend<saving")) {
+				return 2; // change the number when doing calculation
+			} else if (lifeStyle.equals("spend>>saving")) {
+				return 3; // change the number when doing calculation
+			} else if (lifeStyle.equals("spend<<saving")) {
+				return 4; // change the number when doing calculation
+			} else {
+				return 0;// When there is a bug;
+			}
+		}else{
+			return 0;
 		}
 	}
 
