@@ -9,13 +9,21 @@ import java.util.PriorityQueue;
 public class KNN {
 
 	// calculation of similarity between two nodes
+	double[] weight = { 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 };
+	double[][] matrix1 = { { 1, 0, 0, 0, 0 }, { 0, 1, 0, 0, 0 },
+			{ 0, 0, 1, 0, 0 }, { 0, 0, 0, 1, 0 }, { 0, 0, 0, 0, 1 } };
+	double[][] matrix2 = { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 },
+			{ 0, 0, 0, 1 } };
+
 	public double calSimilarity(KNNNode d1, KNNNode d2) {
-		double similarity = Math.pow(d1.getType() - d2.getType(), 2)
-				+ Math.pow(d1.getLifeStyle() - d2.getLifeStyle(), 2)
-				+ Math.pow(d1.getVacation() - d2.getVacation(), 2)
-				+ Math.pow(d1.getEcredit() - d2.getEcredit(), 2)
-				+ Math.pow(d1.getSalary() - d2.getSalary(), 2)
-				+ Math.pow(d1.getProperty() - d2.getProperty(), 2);
+		double typeDiff = 1 - matrix1[d1.getType()][d2.getType()];
+		double lifeDiff = 1 - matrix2[d1.getLifeStyle()][d2.getLifeStyle()];
+		double similarity = Math.sqrt(weight[0] * Math.pow(typeDiff, 2)
+				+ weight[1] * Math.pow(lifeDiff, 2) + weight[2]
+				* Math.pow(d1.getVacation() - d2.getVacation(), 2) + weight[3]
+				* Math.pow(d1.getEcredit() - d2.getEcredit(), 2) + weight[4]
+				* Math.pow(d1.getSalary() - d2.getSalary(), 2) + weight[5]
+				* Math.pow(d1.getProperty() - d2.getProperty(), 2));
 		return 1 / similarity;
 	}
 
@@ -50,20 +58,13 @@ public class KNN {
 				queue.add(tmp);
 			}
 		}
-		category = getCategory(queue); // category calculation method
-		System.out.print(testnode.getType() + "    ");
-		System.out.print(testnode.getLifeStyleString() + "    ");
-		System.out.print(testnode.getVacation() + "    ");
-		System.out.print(testnode.getEcredit() + "    ");
-		System.out.print(testnode.getSalary() + "    ");
-		System.out.print(testnode.getProperty() + "    ");
-		System.out.println(category);
+		category = getCategory(queue);
 		return category;
 	}
 
 	// input the queue to find the category
 	private String getCategory(PriorityQueue<KNNNode> queue) {
-		// map to storelabel and total score
+		// map to store label and total score
 		Map<String, Double> map = new HashMap<String, Double>();
 		String rs = null;
 		// put label and total score pair into map

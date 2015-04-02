@@ -1,6 +1,7 @@
 package knn;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,33 +13,76 @@ public class knnrun {
 
 	public static void main(String[] args) {
 		DataSet trainData = new DataSet();
-		trainData.readDataFromFile("trainProdSelection.arff"); 
-		
-        DataSet testData = new DataSet();
-        testData.readDataFromFile("testProdSelection.arff");
-		
+		trainData.readDataFromFile("trainProdSelection.arff");
 		List<KNNNode> traindata = new ArrayList<KNNNode>();
-		
 		traindata = datatoknn(trainData);
-		List<KNNNode> testdata = new ArrayList<KNNNode>();
-		testdata = datatoknn(testData);
-
-		KNN knn = new KNN();// initialize a new knn class
-		for (int i = 0; i < testdata.size(); i++) { // run by test nodes
-			KNNNode testnode = testdata.get(i);
-			knn.knn(traindata, testnode);
+		List<KNNNode> random = new ArrayList<KNNNode>();
+		for (int i = 0; i < traindata.size(); i++) {
+			random.add(traindata.get(i));
 		}
+		List<KNNNode> temp = new ArrayList<KNNNode>();
+		while (random.size() > 0) {
+			int parameter = (int) (Math.random() * random.size());
+			temp.add(random.remove(parameter));
+		}
+		for (int i = 0; i < temp.size(); i++) {
+			random.add(temp.get(i));
+		}
+		List<KNNNode> train = new ArrayList<KNNNode>();
+		proceed(random);
+		System.out.println(random.size()+"is");
+		KNN knn = new KNN();
+		double num = 0.0;
+		double accuracy = 0.0;
+		double average = 0.0;
+		double total = 0.0;
+		for (int i = 0; i < 10; i++) {
+			List<KNNNode> testdata = new ArrayList<KNNNode>();
+			for (int j = 0; j < 17; j++) {
+				KNNNode tmp = random.remove(0);
+				testdata.add(tmp);
+			}
+			train = random;
+			// initialize a new knn class
+			for (int k = 0; k < testdata.size(); k++) { // run by test nodes
+				KNNNode testnode = testdata.get(k);
+				String result = knn.knn(train, testnode);
+				if (result.equals(testnode.getLabel())) {
+					num++;
+				}
+				accuracy = Math.round(num * 100 / 17.00);
+				total += accuracy;
+			}
+			traindata.addAll(testdata);
+			System.out.println(num + "is" + accuracy + "%");
+			System.out.println();
+			num = 0.0;
+		}
+		average = total / 100;
+		System.out.println(average + "%");
+	}
+	
+	
+	private static List<KNNNode> proceed(List<KNNNode> train) {
+		for (int i = 0; i < train.size(); i++) {
+			KNNNode temp = train.get(i);
+			if (temp.getVacation() > 60 || temp.getEcredit() > 3000
+					|| temp.getEcredit() < 5 || temp.getSalary() < 10
+					|| temp.getSalary() > 40 || temp.getProperty() > 20) {
+				train.remove(temp);
+			}
+		}
+		return train;
 	}
 
 	private static List<KNNNode> datatoknn(DataSet dataSet) {
 		List<KNNNode> rs = new ArrayList<KNNNode>();
 		for (Data d : dataSet.getData()) {
-			
-			
+
 			HashMap<String, String> map = d.getData();
-			
+
 			KNNNode tmpnode = new KNNNode(null, null, 0, 0, 0, 0, null);
-			
+
 			for (Map.Entry<String, String> entry : map.entrySet()) {
 				String key = entry.getKey().toString();
 				String value = entry.getValue();

@@ -96,33 +96,33 @@ public class KNNNode {
 	private int calType(String type) {
 		if (type != null) {
 			if (type.equals("student")) {
-				return 1; // change the number when doing calculation
+				return 0; // change the number when doing calculation
 			} else if (type.equals("engineer")) {
-				return 2; // change the number when doing calculation
+				return 1; // change the number when doing calculation
 			} else if (type.equals("librarian")) {
-				return 3; // change the number when doing calculation
+				return 2; // change the number when doing calculation
 			} else if (type.equals("professor")) {
-				return 4; // change the number when doing calculation
+				return 3; // change the number when doing calculation
 			} else if (type.equals("doctor")) {
-				return 5; // change the number when doing calculation
+				return 4; // change the number when doing calculation
 			} else {
-				return 0;// When there is a bug;
+				return 10;// When there is a bug;
 			}
 		} else {
-			return 0;
+			return 10;
 		}
 	}
 
 	private String toType(int type) {
-		if (type == 1) {
+		if (type == 0) {
 			return "student"; // change the number when doing calculation
-		} else if (type == 2) {
+		} else if (type == 1) {
 			return "engineer"; // change the number when doing calculation
-		} else if (type == 3) {
+		} else if (type == 2) {
 			return "librarian"; // change the number when doing calculation
-		} else if (type == 4) {
+		} else if (type == 3) {
 			return "professor"; // change the number when doing calculation
-		} else if (type == 5) {
+		} else if (type == 4) {
 			return "doctor"; // change the number when doing calculation
 		} else {
 			return null;// When there is a bug;
@@ -131,31 +131,31 @@ public class KNNNode {
 
 	private int calLifeStyle(String lifeStyle) {
 		if (lifeStyle != null) {
-			if (lifeStyle.equals("spend>saving")) {
-				return 1; // change the number when doing calculation
+			if (lifeStyle.equals("spend<<saving")) {
+				return 0; // change the number when doing calculation
 			} else if (lifeStyle.equals("spend<saving")) {
+				return 1; // change the number when doing calculation
+			} else if (lifeStyle.equals("spend>saving")) {
 				return 2; // change the number when doing calculation
 			} else if (lifeStyle.equals("spend>>saving")) {
 				return 3; // change the number when doing calculation
-			} else if (lifeStyle.equals("spend<<saving")) {
-				return 4; // change the number when doing calculation
 			} else {
-				return 0;// When there is a bug;
+				return 10;// When there is a bug;
 			}
 		}else{
-			return 0;
+			return 10;
 		}
 	}
 
 	private String toLifeStyle(int lifeStyle) {
-		if (lifeStyle == 1) {
-			return "spend>saving"; // change the number when doing calculation
-		} else if (lifeStyle == 2) {
+		if (lifeStyle == 0) {
+			return "spend<<saving"; // change the number when doing calculation
+		} else if (lifeStyle == 1) {
 			return "spend<saving"; // change the number when doing calculation
+		} else if (lifeStyle == 2) {
+			return "spend>saving"; // change the number when doing calculation
 		} else if (lifeStyle == 3) {
 			return "spend>>saving"; // change the number when doing calculation
-		} else if (lifeStyle == 4) {
-			return "spend<<saving"; // change the number when doing calculation
 		} else {
 			return null;// When there is a bug;
 		}
