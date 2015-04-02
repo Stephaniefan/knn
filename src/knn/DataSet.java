@@ -47,27 +47,7 @@ public class DataSet {
      * 
      * @return DataSet: the targeted sub dataset
      * */
-    public DataSet getSubSet (String attribute, String value, boolean left, ArrayList<String> attriList) {
-    	DataSet subset = new DataSet(this.relation, this.attributeMap, attriList, this.getObjective());
-    	if (attributeMap.get(attribute).isRealNum()) {
-    		for (Data data : dataList) {
-    			if (left && Double.parseDouble(data.getData(attribute)) <= Double.parseDouble(value)) {
-    				subset.add(data);
-    			}
-    			else if (!left && Double.parseDouble(data.getData(attribute)) > Double.parseDouble(value)) {
-    				subset.add(data);
-    			}
-    		}
-    	} else {
-    		for (Data data : dataList) {
-    			if (data.getData(attribute).equals(value)) {
-    				subset.add(data);
-    			}
-    		}
-    	}
-    	return subset;
-    }
-    
+
     public void add (Data d) {
     	dataList.add(d);
     }
@@ -94,7 +74,7 @@ public class DataSet {
                 }
             }
             while ((buffer = reader.readLine()) != null) {
-                dataList.add(new Data(attributeList, buffer));
+                dataList.add(new Data(attributeList, buffer, attributeMap));
             }
             reader.close();
         } catch (IOException e) {

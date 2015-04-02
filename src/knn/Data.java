@@ -1,45 +1,86 @@
 package knn;
+
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 
 /**
- * Data class contains attributes for an entry/record
- * It stores data in a HashMap:
+ * Data class contains attributes for an entry/record It stores data in a
+ * HashMap:
  * */
 
 public class Data {
-    // key: attribute name
-    // value: attribute value, stored in string
-    private HashMap<String, String> data;
+	// key: attribute name
+	// value: attribute value, stored in string
+	private HashMap<String, Double> data;
+	private double distance;
 
-    public HashMap<String, String> getData() {
-        return data;
-    }
-    
-    public String getData(String key) {
-        return data.get(key);
-    }
-    
-    public Data (ArrayList<String> attributeList, String content) {
-        data = new HashMap<String, String>();
-        String[] values = content.split(",");
-        for (int i = 0; i < attributeList.size(); ++i) {
-            data.put(attributeList.get(i), values[i]);
-        }
-    }
+	public HashMap<String, Double> getData() {
+		return data;
+	}
 
-    @Override
-    public String toString() {
-        return "Data [data=" + data + "]";
-    }
+	public Double getData(String key) {
+		return data.get(key);
+	}
 
-    public static void main(String[] args) {
-        @SuppressWarnings("serial")
-        ArrayList<String> attributeList = new ArrayList<String> ()
-                {{add("A"); add("B"); add("C");}};
-        String content = "Fund,Student,0.64";
-        Data d = new Data(attributeList, content);
-        System.out.println(d);
-    }
+	public Double getDistance() {
+		return distance;
+	}
+
+	public void setDistance(Double distance) {
+		this.distance = distance;
+	}
+
+	public Data(ArrayList<String> attributeList, String content,
+			HashMap<String, Attribute> attributeMap) {
+		data = new HashMap<String, Double>();
+		String[] values = content.split(",");
+		for (int i = 0; i < attributeList.size(); ++i) {
+			if (attributeMap.get(attributeList.get(i)).isRealNum()) {
+				data.put(attributeList.get(i), Double.parseDouble(values[i]));
+			} else {
+				HashMap<String, Double> valueMap = attributeMap.get(
+						attributeList.get(i)).getValueSet();
+				data.put(attributeList.get(i),
+						valueMap.get(attributeList.get(i)));
+
+			}
+		}
+	}
+
+	@Override
+	public String toString() {
+		return "Data [data=" + data + "]";
+	}
+
+	public static void main(String[] args) {
+		@SuppressWarnings("serial")
+		ArrayList<String> attributeList = new ArrayList<String>() {
+			{
+				add("A");
+				add("B");
+				add("C");
+			}
+		};
+		String content = "Fund,Student,0.64";
+		HashMap<String, Attribute> attributeMap = new HashMap<String, Attribute>();
+		Attribute at = new Attribute("A", "adsa");
+		Attribute at1 = new Attribute("B", "asdasd");
+		Attribute at2 = new Attribute("C", "real");
+		attributeMap.put("A", at);
+		attributeMap.put("B", at1);
+		attributeMap.put("C", at2);
+		
+		for (Map.Entry<String, Attribute> entry : attributeMap.entrySet()) {
+			String key = entry.getKey().toString();
+			Attribute value = entry.getValue();
+			System.out.println(key);
+			System.out.println(value);
+		}
+		
+		Data d = new Data(attributeList, content, attributeMap);
+		System.out.println(d);
+	}
 
 }
