@@ -41,7 +41,7 @@ public class knnrun {
 		double total = 0.0;
 		for (int i = 0; i < 10; i++) {
 			List<KNNNode> testdata = new ArrayList<KNNNode>();
-			for (int j = 0; j < 18; j++) {
+			for (int j = 0; j < 17; j++) {
 				KNNNode tmp = random.remove(0);
 				testdata.add(tmp);
 			}
