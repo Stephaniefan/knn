@@ -3,9 +3,7 @@ package knn;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.PriorityQueue;
 
 public class KNN {
@@ -18,7 +16,7 @@ public class KNN {
 			String key = entry.getKey().toString();
 			if (!key.equals(label)) {
 				Attribute value = entry.getValue();
-				double wt = weight.get(value);
+				double wt = weight.get(key);
 				if (value.isRealNum()) {
 					similarity += Math
 							.pow(d1.getData(key) - d2.getData(key), 2) * wt;
@@ -43,10 +41,9 @@ public class KNN {
 
 	// body of knn
 	public String knn(DataSet traindata, Data testnode,
-			HashMap<String, Double> weight) {
+			HashMap<String, Double> weight, int k) {
 
 		String category = null;
-		int k = 3; // set k;
 		PriorityQueue<Data> queue = new PriorityQueue<Data>(k, comparator);
 		ArrayList<Data> datalist = traindata.getData();
 		for (int i = 0; i < k; i++) { // add first k nodes from traindata to
@@ -73,7 +70,7 @@ public class KNN {
 		HashMap<String, Double> map = traindata.getAttributeMap()
 				.get(traindata.getObjective()).getValueSet();
 
-		category = getCategory(queue, map, traindata.getObjective());
+		category = getCategory(queue, map, traindata.getObjective(), k);
 
 		// set test node label
 		testnode.setLabel(map.get(category), traindata.getObjective());
@@ -126,12 +123,12 @@ public class KNN {
 
 	// input the queue to find the category
 	private String getCategory(PriorityQueue<Data> queue,
-			HashMap<String, Double> MatchMap, String label) {
+			HashMap<String, Double> MatchMap, String label, int k) {
 		// map to store label and total score
 		Map<String, Double> map = new HashMap<String, Double>();
 		String rs = null;
 		// put label and total score pair into map
-		for (int i = 0; i < queue.size(); i++) {
+		for (int i = 0; i < k; i++) {
 			Data tmp = queue.poll();
 			String category = null;
 

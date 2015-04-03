@@ -25,14 +25,17 @@ public class knnoperation {
 																		// and
 																		// max
 		HashMap<String, Double> matrix = new HashMap<String, Double>();
-		ArrayList<String> attributelist = trainData.getAttributeList();
-		for (int i = 0; i < attributelist.size(); i++) {
-			matrix.put(attributelist.get(i), value);
-		}
+		matrix.put("Type", 1.0);
+		matrix.put("LifeStyle", 0.05);
+		matrix.put("Vacation", 8.0);
+		matrix.put("eCredit", 25.0);
+		matrix.put("salary", 13.0);
+		matrix.put("property", 1.0);
 
+		
 		knn.normalization(trainData, minmaxmap); // do normalization
 
-		System.out.println("accuracy" + accuracy(trainData, 10, knn));
+		System.out.println("accuracy" + accuracy(trainData, 10, knn, matrix));
 
 		//
 		// knn.normalization(testData, minmaxmap);
@@ -94,7 +97,7 @@ public class knnoperation {
 
 			for (int x = 0; x < test.size(); x++) {
 				if (test.get(x).getData(objective) == map.get(knn.knn(tmp,
-						test.get(x), weight))) {
+						test.get(x), weight, 3))) {
 					totalcorrect++;
 					correct++;
 				}
