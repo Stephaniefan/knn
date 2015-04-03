@@ -1,9 +1,11 @@
 package knn;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.PriorityQueue;
 
 public class KNN {
@@ -15,20 +17,29 @@ public class KNN {
 	double[][] matrix2 = { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 },
 			{ 0, 0, 0, 1 } };
 
-	public double calSimilarity(KNNNode d1, KNNNode d2) {
-		double typeDiff = 1 - matrix1[d1.getType()][d2.getType()];
-		double lifeDiff = 1 - matrix2[d1.getLifeStyle()][d2.getLifeStyle()];
-		double similarity = Math.sqrt(weight[0] * Math.pow(typeDiff, 2)
-				+ weight[1] * Math.pow(lifeDiff, 2) + weight[2]
-				* Math.pow(d1.getVacation() - d2.getVacation(), 2) + weight[3]
-				* Math.pow(d1.getEcredit() - d2.getEcredit(), 2) + weight[4]
-				* Math.pow(d1.getSalary() - d2.getSalary(), 2) + weight[5]
-				* Math.pow(d1.getProperty() - d2.getProperty(), 2));
+	public double calSimilarity(Data d1, Data d2, String label) {
+		double similarity = 0;
+
+		HashMap<String, Attribute> map = d1.getAttributes();
+		for (Map.Entry<String, Attribute> entry : map.entrySet()) {
+			String key = entry.getKey().toString();
+			if (!key.equals(label)) {
+				Attribute value = entry.getValue();
+				if (value.isRealNum()) {
+					similarity += Math
+							.pow(d1.getData(key) - d2.getData(key), 2);
+				} else {
+					if (d1.getData(key) == d2.getData(key)) {
+						similarity += Math.pow(1, 2);
+					}
+				}
+			}
+		}
 		return 1 / similarity;
 	}
 
-	private Comparator<KNNNode> comparator = new Comparator<KNNNode>() {
-		public int compare(KNNNode node1, KNNNode node2) {
+	private Comparator<Data> comparator = new Comparator<Data>() {
+		public int compare(Data node1, Data node2) {
 			if (node1.getSimilarity() >= node2.getSimilarity())
 				return 1;
 			else
@@ -37,40 +48,62 @@ public class KNN {
 	};
 
 	// body of knn
-	public String knn(List<KNNNode> traindata, KNNNode testnode) {
+	public String knn(DataSet traindata, Data testnode) {
 		String category = null;
 		int k = 3; // set k;
-		PriorityQueue<KNNNode> queue = new PriorityQueue<KNNNode>(k, comparator);
+		PriorityQueue<Data> queue = new PriorityQueue<Data>(k, comparator);
+		ArrayList<Data> datalist = traindata.getData();
 		for (int i = 0; i < k; i++) { // add first k nodes from traindata to
 										// queue;
-			KNNNode tmpnode = traindata.get(i);
-			tmpnode.setSimilarity(calSimilarity(testnode, tmpnode));
+			Data tmpnode = datalist.get(i);
+			tmpnode.setSimilarity(calSimilarity(
+					testnode,
+					tmpnode,
+					traindata.getAttributeList().get(
+							traindata.getAttributeList().size() - 1)));
 			queue.add(tmpnode);
 		}
-		for (int i = 0; i < traindata.size(); i++) {// modify queue to k most
+		for (int i = k; i < datalist.size(); i++) {// modify queue to k most
 													// similar nodes
-			KNNNode tmp = traindata.get(i);
-			double similarity = calSimilarity(testnode, tmp);
-			KNNNode queuetop = queue.peek();
+			Data tmp = datalist.get(i);
+			double similarity = calSimilarity(
+					testnode,
+					tmp,
+					traindata.getAttributeList().get(
+							traindata.getAttributeList().size() - 1));
+			Data queuetop = queue.peek();
 			if (queuetop.getSimilarity() < similarity) {
 				tmp.setSimilarity(similarity);
 				queue.poll();
 				queue.add(tmp);
 			}
 		}
-		category = getCategory(queue);
+
+		HashMap<String, Double> map = traindata.getAttributeMap()
+				.get(traindata.getObjective()).getValueSet();
+		category = getCategory(queue, map, traindata.getObjective());
+
+		testnode.setLabel(map.get(category), traindata.getObjective());
 		return category;
 	}
 
 	// input the queue to find the category
-	private String getCategory(PriorityQueue<KNNNode> queue) {
+	private String getCategory(PriorityQueue<Data> queue,
+			HashMap<String, Double> MatchMap, String label) {
 		// map to store label and total score
 		Map<String, Double> map = new HashMap<String, Double>();
 		String rs = null;
 		// put label and total score pair into map
 		for (int i = 0; i < queue.size(); i++) {
-			KNNNode tmp = queue.poll();
-			String category = tmp.getLabel();
+			Data tmp = queue.poll();
+			String category = null;
+
+			for (Map.Entry<String, Double> entry : MatchMap.entrySet()) {
+				if (entry.getValue() == tmp.getData(label)) {
+					category = entry.getKey().toString();
+				}
+			}
+
 			double similarity = tmp.getSimilarity();
 			if (map.containsKey(category)) {
 				similarity += map.get(category);

@@ -40,13 +40,6 @@ public class DataSet {
         objective = obj;
     }
 
-    /**
-     * @param String attribute: name of attribute
-     * @param String value: decision point, for class, it represents a category; for real number, it halves the range
-     * @param boolean left: only used in real number, represents <= value OR > value
-     * 
-     * @return DataSet: the targeted sub dataset
-     * */
 
     public void add (Data d) {
     	dataList.add(d);

@@ -3,6 +3,7 @@ package knn;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -14,7 +15,12 @@ public class Data {
 	// key: attribute name
 	// value: attribute value, stored in string
 	private HashMap<String, Double> data;
-	private double distance;
+	private double similarity;
+	private HashMap<String, Attribute> attribute;
+
+	public void setLabel(Double label, String key) {
+		data.put(key, label);
+	}
 
 	public HashMap<String, Double> getData() {
 		return data;
@@ -24,26 +30,33 @@ public class Data {
 		return data.get(key);
 	}
 
-	public Double getDistance() {
-		return distance;
+	public Double getSimilarity() {
+		return similarity;
 	}
 
-	public void setDistance(Double distance) {
-		this.distance = distance;
+	public void setSimilarity(Double similarity) {
+		this.similarity = similarity;
+	}
+
+	public HashMap<String, Attribute> getAttributes() {
+		return attribute;
 	}
 
 	public Data(ArrayList<String> attributeList, String content,
 			HashMap<String, Attribute> attributeMap) {
+		attribute = attributeMap;
 		data = new HashMap<String, Double>();
 		String[] values = content.split(",");
+
 		for (int i = 0; i < attributeList.size(); ++i) {
 			if (attributeMap.get(attributeList.get(i)).isRealNum()) {
 				data.put(attributeList.get(i), Double.parseDouble(values[i]));
 			} else {
+
 				HashMap<String, Double> valueMap = attributeMap.get(
 						attributeList.get(i)).getValueSet();
-				data.put(attributeList.get(i),
-						valueMap.get(attributeList.get(i)));
+
+				data.put(attributeList.get(i), valueMap.get(values[i]));
 
 			}
 		}
@@ -71,14 +84,14 @@ public class Data {
 		attributeMap.put("A", at);
 		attributeMap.put("B", at1);
 		attributeMap.put("C", at2);
-		
+
 		for (Map.Entry<String, Attribute> entry : attributeMap.entrySet()) {
 			String key = entry.getKey().toString();
 			Attribute value = entry.getValue();
 			System.out.println(key);
 			System.out.println(value);
 		}
-		
+
 		Data d = new Data(attributeList, content, attributeMap);
 		System.out.println(d);
 	}

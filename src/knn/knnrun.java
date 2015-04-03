@@ -1,5 +1,8 @@
 package knn;
 
+import Data;
+import DataSet;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -107,4 +110,45 @@ public class knnrun {
 		return rs;
 	}
 
+    public static double accuracy (DataSet dataSet, int k) {
+    	double total = 0, correct = 0;
+    	for(int i = 0; i < k; i++){
+    		ArrayList<Data> tmp = new ArrayList<Data>();
+    		for(int j = tmp.size()/k * i; j < tmp.size()/k * (i+1); j++){
+    			Data data = dataSet.getData();
+    		}
+    		
+    	}
+    		for (Data data : dataSet.getData()) {
+        	if (validation(root, data, dataSet.getObjective())){
+        		correct++;
+        	}
+        	total++;
+        }
+        return correct / total;
+    }
+	
+    public static boolean validation (List<KNNNode> data, KNNNode target) {
+    	String tmp = target.getLabel();
+    		for (KN key : root.children.keySet()) {
+    			if (key.equals("left")) {
+    				if (Double.parseDouble(data.getData(root.attribute)) <=Double.parseDouble(root.children.get(key).value)) {
+    					root = root.children.get(key);
+    					break;
+    				}
+    			} else if (key.equals("right")) {
+    				if (Double.parseDouble(data.getData(root.attribute)) > Double.parseDouble(root.children.get(key).value)) {
+    					root = root.children.get(key);
+    					break;
+    				}
+    			} else {
+    				if (key.equals(data.getData(root.attribute))) {
+    					root = root.children.get(key);
+    					break;
+    				}
+    			}
+    		}
+    	return root == null ? false : root.decision.equals(data.getData(target));
+    }
+    
 }
