@@ -12,13 +12,16 @@ public class KNN {
 
 	public double calSimilarity(Data d1, Data d2, String label,
 			HashMap<String, Double> weight) {
+	// calculation of similarity between two nodes
+
 		double similarity = 0;
 		HashMap<String, Attribute> map = d1.getAttributes();
 		for (Map.Entry<String, Attribute> entry : map.entrySet()) {
 			String key = entry.getKey().toString();
 			if (!key.equals(label)) {
 				Attribute value = entry.getValue();
-				double wt = weight.get(value);
+//				System.out.println(value+"value is");
+				double wt = weight.get(key);
 				if (value.isRealNum()) {
 					similarity += Math
 							.pow(d1.getData(key) - d2.getData(key), 2) * wt;
@@ -30,6 +33,26 @@ public class KNN {
 			}
 		}
 		return 1 / Math.sqrt(similarity);
+	}
+
+	public void normLization(DataSet traindata) {
+		ArrayList<String> attribute = traindata.getAttributeList();
+		ArrayList<Data> data = traindata.getData();
+		HashMap<String, double[]> minMax = getMinMax(traindata);
+		for (int i = 0; i < attribute.size(); i++) {
+			String att = attribute.get(i);
+			double min = minMax.get(att)[0];
+			double max = minMax.get(att)[1];
+			if (!traindata.isAttriReal(att)) {
+				continue;
+			} else {
+				for (int j = 0; j < data.size(); j++) {
+					Double value = data.get(j).getData(att);
+					Double newValue = (value - min) / (max - min);
+					data.get(j).setData(att, newValue);
+				}
+			}
+		}
 	}
 
 	private Comparator<Data> comparator = new Comparator<Data>() {
@@ -49,6 +72,7 @@ public class KNN {
 		int k = 3; // set k;
 		PriorityQueue<Data> queue = new PriorityQueue<Data>(k, comparator);
 		ArrayList<Data> datalist = traindata.getData();
+		datalist = shuffle(datalist);
 		for (int i = 0; i < k; i++) { // add first k nodes from traindata to
 										// queue;
 			Data tmpnode = datalist.get(i);
@@ -78,6 +102,22 @@ public class KNN {
 		// set test node label
 		testnode.setLabel(map.get(category), traindata.getObjective());
 		return category;
+	}
+
+	public static ArrayList<Data> shuffle(ArrayList<Data> datalist) {
+		ArrayList<Data> random = new ArrayList<Data>();
+		for (int i = 0; i < datalist.size(); i++) {
+			random.add(datalist.get(i));
+		}
+		ArrayList<Data> temp = new ArrayList<Data>();
+		while (random.size() > 0) {
+			int parameter = (int) (Math.random() * random.size());
+			temp.add(random.remove(parameter));
+		}
+		for (int i = 0; i < temp.size(); i++) {
+			random.add(temp.get(i));
+		}
+		return random;
 	}
 
 	// get the Min and Max value of input dataset, double[0] ==>min, double[1]

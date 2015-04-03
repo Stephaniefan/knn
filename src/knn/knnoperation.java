@@ -26,25 +26,16 @@ public class knnoperation {
 																		// max
 		HashMap<String, Double> matrix = new HashMap<String, Double>();
 		ArrayList<String> attributelist = trainData.getAttributeList();
-		for (int i = 0; i < attributelist.size(); i++) {
-			matrix.put(attributelist.get(i), value);
-		}
-
+		matrix.put("Type",1.0);
+		matrix.put("LifeStyle",0.05);
+		matrix.put("Vacation",8.0);
+		matrix.put("eCredit",25.0);
+		matrix.put("salary",10.0);
+		matrix.put("property",2.0);
 		knn.normalization(trainData, minmaxmap); // do normalization
 
-		System.out.println("accuracy" + accuracy(trainData, 10, knn));
+		System.out.println("accuracy" + accuracy(trainData, 10, knn, matrix));
 
-		//
-		// knn.normalization(testData, minmaxmap);
-		// // ArrayList<String> attributeList = ;
-		// for (Data d : testData.getData()) {
-		// // for (String attribute : testData.getAttributeList()) {
-		// // System.out.println("d" + d);
-		// String label = knn.knn(trainData, d);
-		// System.out.print(d + "     ");
-		// System.out.println(label);
-		// // }
-		// }
 	}
 
 	public static ArrayList<Data> shuffle(ArrayList<Data> datalist) {
@@ -64,7 +55,7 @@ public class knnoperation {
 	}
 
 	public static double accuracy(DataSet dataSet, int k, KNN knn,
-			HashMap<String, Double> weight) {
+			HashMap<String, Double> matrix) {
 		dataSet.setData(shuffle(dataSet.getData()));
 		ArrayList<Data> stroage = dataSet.getData();
 
@@ -94,7 +85,7 @@ public class knnoperation {
 
 			for (int x = 0; x < test.size(); x++) {
 				if (test.get(x).getData(objective) == map.get(knn.knn(tmp,
-						test.get(x), weight))) {
+						test.get(x), matrix))) {
 					totalcorrect++;
 					correct++;
 				}
