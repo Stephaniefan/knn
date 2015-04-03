@@ -97,9 +97,9 @@ public class knnoperation {
 				total++;
 			}
 			dataSet.setData(stroage);
-			accuracy += correct / num;
+			accuracy += correct / test.size();
 			System.out.println("round " + i + "     accuracy is   " + correct
-					/ num);
+					/ test.size());
 		}
 		System.out.println("total" + total);
 		System.out.println("correct" + totalcorrect);
