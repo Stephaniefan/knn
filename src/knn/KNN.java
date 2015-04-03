@@ -49,6 +49,9 @@ public class KNN {
 
 	// body of knn
 	public String knn(DataSet traindata, Data testnode) {
+
+		normalization(traindata, getMinMax(traindata));
+
 		String category = null;
 		int k = 3; // set k;
 		PriorityQueue<Data> queue = new PriorityQueue<Data>(k, comparator);
@@ -103,6 +106,19 @@ public class KNN {
 			}
 		}
 		return rs;
+	}
+
+	// updata each attribute data in dataset to data =(data-min)/(max - min);
+	private void normalization(DataSet traindata,
+			HashMap<String, double[]> minmax) {
+		for (Map.Entry<String, double[]> entry : minmax.entrySet()) {
+			String key = entry.getKey().toString();
+			double[] mm = entry.getValue();
+			for (Data d : traindata.getData()) {
+				double norm = (d.getData(key) - mm[0]) / (mm[1] - mm[0]);
+				d.setData(key, norm);
+			}
+		}
 	}
 
 	// input the queue to find the category

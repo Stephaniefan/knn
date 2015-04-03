@@ -18,6 +18,10 @@ public class Data {
 	private double similarity;
 	private HashMap<String, Attribute> attribute;
 
+	public void setData(String attribute, Double newdata){
+		data.put(attribute, newdata);
+	}
+	
 	public void setLabel(Double label, String key) {
 		data.put(key, label);
 	}
