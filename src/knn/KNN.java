@@ -56,21 +56,15 @@ public class KNN {
 		for (int i = 0; i < k; i++) { // add first k nodes from traindata to
 										// queue;
 			Data tmpnode = datalist.get(i);
-			tmpnode.setSimilarity(calSimilarity(
-					testnode,
-					tmpnode,
-					traindata.getAttributeList().get(
-							traindata.getAttributeList().size() - 1)));
+			tmpnode.setSimilarity(calSimilarity(testnode, tmpnode,
+					traindata.getObjective()));
 			queue.add(tmpnode);
 		}
 		for (int i = k; i < datalist.size(); i++) {// modify queue to k most
 													// similar nodes
 			Data tmp = datalist.get(i);
-			double similarity = calSimilarity(
-					testnode,
-					tmp,
-					traindata.getAttributeList().get(
-							traindata.getAttributeList().size() - 1));
+			double similarity = calSimilarity(testnode, tmp,
+					traindata.getObjective());
 			Data queuetop = queue.peek();
 			if (queuetop.getSimilarity() < similarity) {
 				tmp.setSimilarity(similarity);
@@ -85,6 +79,30 @@ public class KNN {
 
 		testnode.setLabel(map.get(category), traindata.getObjective());
 		return category;
+	}
+
+	// get the Min and Max value of input dataset, double[0] ==>min, double[1]
+	// ==>max, String ==>attribute name
+	private HashMap<String, double[]> getMinMax(DataSet traindata) {
+		ArrayList<String> attributelist = traindata.getAttributeList();
+		HashMap<String, double[]> rs = new HashMap<String, double[]>();
+		for (int i = 0; i < attributelist.size(); i++) {
+			if (traindata.isAttriReal(attributelist.get(i))) {
+				double max = Double.MIN_VALUE;
+				double min = Double.MAX_VALUE;
+				for (Data d : traindata.getData()) {
+					if (d.getData(attributelist.get(i)) > max)
+						max = d.getData(attributelist.get(i));
+					if (d.getData(attributelist.get(i)) < min)
+						min = d.getData(attributelist.get(i));
+				}
+				double[] tmp = new double[2];
+				tmp[0] = min;
+				tmp[1] = max;
+				rs.put(attributelist.get(i), tmp);
+			}
+		}
+		return rs;
 	}
 
 	// input the queue to find the category
