@@ -18,11 +18,18 @@ public class knnoperation {
 
 		DataSet trainData = new DataSet();
 		trainData.readDataFromFile("trainProdSelection.arff");
+		
 		KNN knn = new KNN();
 		HashMap<String, double[]> minmaxmap = knn.getMinMax(trainData);// get
 																		// min
 																		// and
 																		// max
+		HashMap<String,Double> matrix = new HashMap<String, Double>();
+		ArrayList<String> attributelist = trainData.getAttributeList();
+		for(int i = 0; i < attributelist.size(); i++){
+			matrix.put(attributelist.get(i), value);
+		}
+		
 		knn.normalization(trainData, minmaxmap);// do normalization
 		// ArrayList<Data> train = trainData.getData();
 		// for(int i = 0; i < train.size(); i++){

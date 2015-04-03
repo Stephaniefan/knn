@@ -19,18 +19,18 @@ public class KNN {
 
 	public double calSimilarity(Data d1, Data d2, String label,HashMap<String,Double> weight) {
 		double similarity = 0;
-
 		HashMap<String, Attribute> map = d1.getAttributes();
 		for (Map.Entry<String, Attribute> entry : map.entrySet()) {
 			String key = entry.getKey().toString();
 			if (!key.equals(label)) {
 				Attribute value = entry.getValue();
+				double wt = weight.get(value);
 				if (value.isRealNum()) {
 					similarity += Math
-							.pow(d1.getData(key) - d2.getData(key), 2);
+							.pow(d1.getData(key) - d2.getData(key), 2) * wt;
 				} else {
 					if (d1.getData(key) != d2.getData(key)) {
-						similarity += Math.pow(1, 2);
+						similarity += Math.pow(1, 2) * wt;
 					}
 				}
 			}
