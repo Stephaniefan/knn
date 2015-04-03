@@ -11,13 +11,13 @@ import java.util.PriorityQueue;
 public class KNN {
 
 	// calculation of similarity between two nodes
-	double[] weight = { 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 };
-	double[][] matrix1 = { { 1, 0, 0, 0, 0 }, { 0, 1, 0, 0, 0 },
-			{ 0, 0, 1, 0, 0 }, { 0, 0, 0, 1, 0 }, { 0, 0, 0, 0, 1 } };
-	double[][] matrix2 = { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 },
-			{ 0, 0, 0, 1 } };
+//	double[] weight = { 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 };
+//	double[][] matrix1 = { { 1, 0, 0, 0, 0 }, { 0, 1, 0, 0, 0 },
+//			{ 0, 0, 1, 0, 0 }, { 0, 0, 0, 1, 0 }, { 0, 0, 0, 0, 1 } };
+//	double[][] matrix2 = { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 },
+//			{ 0, 0, 0, 1 } };
 
-	public double calSimilarity(Data d1, Data d2, String label) {
+	public double calSimilarity(Data d1, Data d2, String label,HashMap<String,Double> weight) {
 		double similarity = 0;
 
 		HashMap<String, Attribute> map = d1.getAttributes();
@@ -29,13 +29,14 @@ public class KNN {
 					similarity += Math
 							.pow(d1.getData(key) - d2.getData(key), 2);
 				} else {
-					if (d1.getData(key) == d2.getData(key)) {
+					if (d1.getData(key) != d2.getData(key)) {
 						similarity += Math.pow(1, 2);
 					}
 				}
 			}
 		}
-		return 1 / similarity;
+		//System.out.println("Yeah");
+		return 1 / Math.sqrt(similarity);
 	}
 
 	private Comparator<Data> comparator = new Comparator<Data>() {
@@ -48,10 +49,7 @@ public class KNN {
 	};
 
 	// body of knn
-	public String knn(DataSet traindata, Data testnode) {
-		HashMap<String, double[]> minmaxmap = getMinMax(traindata);
-
-		// normalization(traindata, minmaxmap);
+	public String knn(DataSet traindata, Data testnode,HashMap<String, Double> weight) {
 
 		String category = null;
 		int k = 3; // set k;
@@ -61,14 +59,14 @@ public class KNN {
 										// queue;
 			Data tmpnode = datalist.get(i);
 			tmpnode.setSimilarity(calSimilarity(testnode, tmpnode,
-					traindata.getObjective()));
+					traindata.getObjective(), weight));
 			queue.add(tmpnode);
 		}
 		for (int i = k; i < datalist.size(); i++) {// modify queue to k most
 													// similar nodes
 			Data tmp = datalist.get(i);
 			double similarity = calSimilarity(testnode, tmp,
-					traindata.getObjective());
+					traindata.getObjective(), weight);
 			Data queuetop = queue.peek();
 			if (queuetop.getSimilarity() < similarity) {
 				tmp.setSimilarity(similarity);
@@ -76,11 +74,15 @@ public class KNN {
 				queue.add(tmp);
 			}
 		}
-
+		
+		//map is label's attribute name match to index
 		HashMap<String, Double> map = traindata.getAttributeMap()
 				.get(traindata.getObjective()).getValueSet();
+		
+		
 		category = getCategory(queue, map, traindata.getObjective());
 
+		//set test node label
 		testnode.setLabel(map.get(category), traindata.getObjective());
 		return category;
 	}
@@ -91,6 +93,8 @@ public class KNN {
 		ArrayList<String> attributelist = traindata.getAttributeList();
 		HashMap<String, double[]> rs = new HashMap<String, double[]>();
 		for (int i = 0; i < attributelist.size(); i++) {
+			
+			//numeric attribute to find min & max
 			if (traindata.isAttriReal(attributelist.get(i))) {
 				// System.out.println(traindata.isAttriReal(attributelist.get(i)));
 				double max = Double.MIN_VALUE;
