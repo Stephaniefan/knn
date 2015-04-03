@@ -49,8 +49,18 @@ public class KNN {
 
 	// body of knn
 	public String knn(DataSet traindata, Data testnode) {
+		HashMap<String, double[]> minmaxmap = getMinMax(traindata);
 
-		normalization(traindata, getMinMax(traindata));
+		for (Map.Entry<String, double[]> entry : minmaxmap.entrySet()) {
+			String key = entry.getKey().toString();
+			double[] mm = entry.getValue();
+			System.out.println("key" + key);
+			System.out.println("min" + mm[0]);
+			System.out.println("max" + mm[1]);
+		}
+		
+
+		//normalization(traindata, minmaxmap);
 
 		String category = null;
 		int k = 3; // set k;
@@ -91,9 +101,11 @@ public class KNN {
 		HashMap<String, double[]> rs = new HashMap<String, double[]>();
 		for (int i = 0; i < attributelist.size(); i++) {
 			if (traindata.isAttriReal(attributelist.get(i))) {
+				//System.out.println(traindata.isAttriReal(attributelist.get(i)));
 				double max = Double.MIN_VALUE;
 				double min = Double.MAX_VALUE;
 				for (Data d : traindata.getData()) {
+					
 					if (d.getData(attributelist.get(i)) > max)
 						max = d.getData(attributelist.get(i));
 					if (d.getData(attributelist.get(i)) < min)
@@ -102,6 +114,9 @@ public class KNN {
 				double[] tmp = new double[2];
 				tmp[0] = min;
 				tmp[1] = max;
+
+				
+				//System.out.println("max" + max);
 				rs.put(attributelist.get(i), tmp);
 			}
 		}
@@ -111,6 +126,7 @@ public class KNN {
 	// updata each attribute data in dataset to data =(data-min)/(max - min);
 	private void normalization(DataSet traindata,
 			HashMap<String, double[]> minmax) {
+		
 		for (Map.Entry<String, double[]> entry : minmax.entrySet()) {
 			String key = entry.getKey().toString();
 			double[] mm = entry.getValue();
