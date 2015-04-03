@@ -19,6 +19,9 @@ public class DataSet {
     public ArrayList<Data> getData() { return dataList; }
     public String getRelation() { return relation; }
     public String getObjective() { return objective; }
+    public void setData(ArrayList<Data> dataList){
+    	this.dataList = dataList;
+    }
     
     public void setObjective(String v) {  objective = v; }
     
