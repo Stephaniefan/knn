@@ -10,14 +10,8 @@ import java.util.PriorityQueue;
 
 public class KNN {
 
-	// calculation of similarity between two nodes
-//	double[] weight = { 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 };
-//	double[][] matrix1 = { { 1, 0, 0, 0, 0 }, { 0, 1, 0, 0, 0 },
-//			{ 0, 0, 1, 0, 0 }, { 0, 0, 0, 1, 0 }, { 0, 0, 0, 0, 1 } };
-//	double[][] matrix2 = { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 },
-//			{ 0, 0, 0, 1 } };
-
-	public double calSimilarity(Data d1, Data d2, String label,HashMap<String,Double> weight) {
+	public double calSimilarity(Data d1, Data d2, String label,
+			HashMap<String, Double> weight) {
 		double similarity = 0;
 		HashMap<String, Attribute> map = d1.getAttributes();
 		for (Map.Entry<String, Attribute> entry : map.entrySet()) {
@@ -35,7 +29,6 @@ public class KNN {
 				}
 			}
 		}
-		//System.out.println("Yeah");
 		return 1 / Math.sqrt(similarity);
 	}
 
@@ -49,7 +42,8 @@ public class KNN {
 	};
 
 	// body of knn
-	public String knn(DataSet traindata, Data testnode,HashMap<String, Double> weight) {
+	public String knn(DataSet traindata, Data testnode,
+			HashMap<String, Double> weight) {
 
 		String category = null;
 		int k = 3; // set k;
@@ -74,15 +68,14 @@ public class KNN {
 				queue.add(tmp);
 			}
 		}
-		
-		//map is label's attribute name match to index
+
+		// map is label's attribute name match to index
 		HashMap<String, Double> map = traindata.getAttributeMap()
 				.get(traindata.getObjective()).getValueSet();
-		
-		
+
 		category = getCategory(queue, map, traindata.getObjective());
 
-		//set test node label
+		// set test node label
 		testnode.setLabel(map.get(category), traindata.getObjective());
 		return category;
 	}
@@ -93,14 +86,12 @@ public class KNN {
 		ArrayList<String> attributelist = traindata.getAttributeList();
 		HashMap<String, double[]> rs = new HashMap<String, double[]>();
 		for (int i = 0; i < attributelist.size(); i++) {
-			
-			//numeric attribute to find min & max
+
+			// numeric attribute to find min & max
 			if (traindata.isAttriReal(attributelist.get(i))) {
-				// System.out.println(traindata.isAttriReal(attributelist.get(i)));
 				double max = Double.MIN_VALUE;
 				double min = Double.MAX_VALUE;
 				for (Data d : traindata.getData()) {
-
 					if (d.getData(attributelist.get(i)) > max)
 						max = d.getData(attributelist.get(i));
 					if (d.getData(attributelist.get(i)) < min)
@@ -110,7 +101,6 @@ public class KNN {
 				tmp[0] = min;
 				tmp[1] = max;
 
-				// System.out.println("max" + max);
 				rs.put(attributelist.get(i), tmp);
 			}
 		}
@@ -118,14 +108,17 @@ public class KNN {
 	}
 
 	// updata each attribute data in dataset to data =(data-min)/(max - min);
-	public void normalization(DataSet traindata, HashMap<String, double[]> minmax) {
+	public void normalization(DataSet traindata,
+			HashMap<String, double[]> minmax) {
 		for (Map.Entry<String, double[]> entry : minmax.entrySet()) {
 			String key = entry.getKey().toString();
 			double[] mm = entry.getValue();
 			for (Data d : traindata.getData()) {
 				double norm = (d.getData(key) - mm[0]) / (mm[1] - mm[0]);
-				if(norm > 1) norm = 1;
-				if(norm < 0) norm = 0;
+				if (norm > 1)
+					norm = 1;
+				if (norm < 0)
+					norm = 0;
 				d.setData(key, norm);
 			}
 		}
