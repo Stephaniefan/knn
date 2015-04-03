@@ -26,7 +26,6 @@ public class knnoperation {
 		matrix.put("salary", 13.0);
 		matrix.put("property", 1.0);
 
-		
 		knn.normalization(trainData, minmaxmap); // do normalization
 
 		System.out.println("accuracy" + accuracy(trainData, 10, knn, matrix));
@@ -66,7 +65,7 @@ public class knnoperation {
 		ArrayList<Data> stroage = dataSet.getData();
 
 		int totalcorrect = 0;
-
+		double accuracy = 0.00;
 		int num = stroage.size() / k;
 		double total = 0, correct = 0;
 		String objective = dataSet.getObjective();
@@ -98,12 +97,13 @@ public class knnoperation {
 				total++;
 			}
 			dataSet.setData(stroage);
+			accuracy += correct / num;
 			System.out.println("round " + i + "     accuracy is   " + correct
 					/ num);
 		}
 		System.out.println("total" + total);
 		System.out.println("correct" + totalcorrect);
 
-		return totalcorrect / total;
+		return accuracy / k;
 	}
 }
