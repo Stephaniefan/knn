@@ -13,11 +13,30 @@ public class knnoperation {
 		DataSet trainData = new DataSet();
 		trainData.readDataFromFile("trainProdSelection.arff");
 
+		
+		
+		
+		
 		KNN knn = new KNN();
 		HashMap<String, double[]> minmaxmap = knn.getMinMax(trainData);// get
 																		// min
 																		// and
 																		// max
+		HashMap<String, double[][]> matrixMap = new HashMap<String, double[][]>();
+		double[][] type = { {0.0, 1.0, 1.0, 1.0, 1.0},
+		                    {1.0, 0.0, 1.0, 1.0, 1.0},
+		                    {1.0, 1.0, 0.0, 0.0, 0.0},
+		                    {1.0, 1.0, 1.0, 0.0, 1.0},
+		                    {1.0, 1.0, 1.0, 1.0, 0.0}};
+		matrixMap.put("Type", type);
+		double[][] lifestyle = { {0.0, 1.0, 1.0, 1.0},
+                                 {1.0, 0.0, 1.0, 1.0},
+                                 {1.0, 1.0, 0.0, 1.0},
+                                 {1.0, 1.0, 1.0, 0.0}};
+		matrixMap.put("LifeStyle", lifestyle);
+		
+		
+		
 		HashMap<String, Double> matrix = new HashMap<String, Double>();
 		matrix.put("Type", 1.0);
 		matrix.put("LifeStyle", 0.05);
@@ -28,7 +47,7 @@ public class knnoperation {
 
 		knn.normalization(trainData, minmaxmap); // do normalization
 
-		System.out.println("accuracy" + accuracy(trainData, 10, knn, matrix));
+		System.out.println("accuracy" + accuracy(trainData, 10, knn, matrix, matrixMap));
 
 		//
 		// knn.normalization(testData, minmaxmap);
@@ -60,13 +79,12 @@ public class knnoperation {
 	}
 
 	public static double accuracy(DataSet dataSet, int k, KNN knn,
-			HashMap<String, Double> weight) {
+			HashMap<String, Double> weight, HashMap<String, double[][]> matrixMap) {
 		dataSet.setData(shuffle(dataSet.getData()));
 		ArrayList<Data> stroage = dataSet.getData();
 
 		int totalcorrect = 0;
 		double accuracy = 0.00;
-		int num = stroage.size() / k;
 		double total = 0, correct = 0;
 		String objective = dataSet.getObjective();
 		HashMap<String, Double> map = dataSet.getAttributeMap()
@@ -90,7 +108,7 @@ public class knnoperation {
 
 			for (int x = 0; x < test.size(); x++) {
 				if (test.get(x).getData(objective) == map.get(knn.knn(tmp,
-						test.get(x), weight, 3))) {
+						test.get(x), weight, 3, matrixMap))) {
 					totalcorrect++;
 					correct++;
 				}
