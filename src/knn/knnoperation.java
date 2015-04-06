@@ -44,6 +44,7 @@ public class knnoperation {
 
 		knn.normalization(trainData, minmaxmap); // do normalization
 		knn.normalization(testData, minmaxmap);
+<<<<<<< Updated upstream
 		for (Data d : testData.getData()) {
 			// System.out.println(testData.getData().size());
 
@@ -59,6 +60,39 @@ public class knnoperation {
 		// .println("accuracy"
 		// + df.format(accuracy(trainData, 10, knn, matrix,
 		// matrixMap) * 100) + "%");
+=======
+		
+//		for (Data d : testData.getData()) {
+//			// System.out.println(testData.getData().size());
+//
+//		System.out.println("accuracy"
+//				+ accuracy(trainData, 10, knn, matrix, matrixMap));
+//
+//		//
+//		// knn.normalization(testData, minmaxmap);
+//		
+//		// for (Data d : testData.getData()) {
+//		// // for (String attribute : testData.getAttributeList()) {
+//		// // System.out.println("d" + d);
+//		// String label = knn.knn(trainData, d, matrix, 3, matrixMap);
+//		// //System.out.print(d + "     ");
+//		// System.out.println(label);
+//		// // }
+//		// }
+//			String label = null;
+//			for (String attribute : testData.getAttributeList()) {
+//				label = knn.knn(trainData, d, matrix, 3, matrixMap);
+//			}
+//
+//			System.out.print(d);
+//			System.out.println(label);
+//		}
+
+		 System.out
+		 .println("accuracy"
+		 + df.format(accuracy(trainData, 10, knn, matrix,
+		 matrixMap) * 100) + "%");
+>>>>>>> Stashed changes
 
 	}
 
@@ -89,6 +123,10 @@ public class knnoperation {
 		double accuracy = 0.00;
 		double total = 0, correct = 0;
 
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 		// int totalnum = 0;
 
 		String objective = dataSet.getObjective();
@@ -101,6 +139,7 @@ public class knnoperation {
 			ArrayList<Data> train = new ArrayList<Data>();
 
 			train = (ArrayList<Data>) dataSet.getData().clone();
+<<<<<<< Updated upstream
 			if (i == k - 1) {
 				for (int j = stroage.size() - 1; j >= (stroage.size() / k) * i; j--) {
 					test.add(train.remove(j));
@@ -138,15 +177,47 @@ public class knnoperation {
 						correct++;
 					}
 					total++;
+=======
+			if (i != k - 1) {
+				for (int j = (stroage.size() / k) * (i + 1)-1; j >= (stroage
+						.size() / k) * i; j--) {
+					test.add(train.remove(j));
+					//totalnum++;
+				}
+			} else {
+				for (int j = stroage.size() - 1; j >= (stroage.size() / k) * i; j--) {
+					test.add(train.remove(j));
+					//totalnum++;
+				}
+			}
+			DataSet tmp = new DataSet();
+			tmp = dataSet;
+			tmp.setData(train);
+
+			for (int x = 0; x < test.size(); x++) {
+				if (test.get(x).getData(objective) == map.get(knn.knn(tmp,
+						test.get(x), weight, 3, matrixMap))) {
+					totalcorrect++;
+					correct++;
+>>>>>>> Stashed changes
 				}
 				dataSet.setData(stroage);
 				accuracy += correct / test.size();
 			}
+<<<<<<< Updated upstream
+=======
+			dataSet.setData(stroage);
+			accuracy += correct / test.size();
+>>>>>>> Stashed changes
 			System.out.println("round " + i + "     accuracy is   "
 					+ df.format(correct / test.size() * 100) + "%");
 		}
 		System.out.println("total" + total);
 		System.out.println("correct" + totalcorrect);
+<<<<<<< Updated upstream
+=======
+		//System.out.println("totalnum" + totalnum);
+>>>>>>> Stashed changes
 		return accuracy / k;
 	}
 }
