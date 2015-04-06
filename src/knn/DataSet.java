@@ -7,13 +7,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/*ebiz Task 11
+ * Author: Wei Dai Ningxin Fan
+ * class to deal with data from files
+ */
 public class DataSet {
 	private HashMap<String, Attribute> attributeMap; // attri name -> attribute
 														// info.
 	private ArrayList<String> attributeList; // list of attributes
 	private ArrayList<Data> dataList; // list of all data
 	private String relation;
-	private String objective;
+	private String objective;// sign which should be our objective
 
 	public HashMap<String, Attribute> getAttributeMap() {
 		return attributeMap;

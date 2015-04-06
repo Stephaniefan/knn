@@ -5,30 +5,12 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.PriorityQueue;
-
+/*ebiz Task 11
+ * Author: Wei Dai Ningxin Fan
+ * Data class contains attributes for an entry/record 
+ * It stores data in a HashMap:
+  */
 public class KNN {
-
-	// public double calSimilarity(Data d1, Data d2, String label,
-	// HashMap<String, Double> weight) {
-	// double similarity = 0;
-	// HashMap<String, Attribute> map = d1.getAttributes();
-	// for (Map.Entry<String, Attribute> entry : map.entrySet()) {
-	// String key = entry.getKey().toString();
-	// if (!key.equals(label)) {
-	// Attribute value = entry.getValue();
-	// double wt = weight.get(key);
-	// if (value.isRealNum()) {
-	// similarity += Math
-	// .pow(d1.getData(key) - d2.getData(key), 2) * wt;
-	// } else {
-	// if (d1.getData(key) != d2.getData(key)) {
-	// similarity += Math.pow(1, 2) * wt;
-	// }
-	// }
-	// }
-	// }
-	// return 1 / Math.sqrt(similarity);
-	// }
 
 	private Comparator<Data> comparator = new Comparator<Data>() {
 		public int compare(Data node1, Data node2) {
@@ -39,7 +21,20 @@ public class KNN {
 		}
 	};
 
-	// body of knn
+	/*
+	 * @param traindata: reading from data for training
+	 * 
+	 * @param data: node to be tested 
+	 * 
+	 * @param k nearest neighbors
+	 * 
+	 * @param weight: different weight for each attributes
+	 * 
+	 * @param matrix Map: similarity matrix for those symbolic attributes
+	 * 
+	 * @return: the label of the test node
+	 */
+	
 	public String knn(DataSet traindata, Data testnode,
 			HashMap<String, Double> weight, int k,
 			HashMap<String, double[][]> matrixMap) {
@@ -83,7 +78,7 @@ public class KNN {
 		} else {
 			score = calCategory(queue, traindata.getObjective(), k);
 			testnode.setLabel(score, traindata.getObjective());
-			category = score+"";
+			category = score + "";
 		}
 		return category;
 	}
@@ -115,7 +110,9 @@ public class KNN {
 		return rs;
 	}
 
-	// updata each attribute data in dataset to data =(data-min)/(max - min);
+	// normalize each attribute data=(data-min)/(max - min);
+	// use the getMinMax function to find the max value and min value
+
 	public void normalization(DataSet traindata,
 			HashMap<String, double[]> minmax) {
 		for (Map.Entry<String, double[]> entry : minmax.entrySet()) {
@@ -133,6 +130,18 @@ public class KNN {
 	}
 
 	// input the queue to find the category
+	/*
+	 * @param queue: priority queue to store k the nearest neighbors
+	 * 
+	 * @param MatchMap: HashMap which stores the value of each attributes
+	 * 
+	 * @param k: the number of nearest neighbors
+	 * 
+	 * @param label: label the test node should be classified
+	 * 
+	 * @return: the category of the test node
+	 */
+	
 	private String getCategory(PriorityQueue<Data> queue,
 			HashMap<String, Double> MatchMap, String label, int k) {
 		// map to store label and total score
@@ -142,13 +151,17 @@ public class KNN {
 		for (int i = 0; i < k; i++) {
 			Data tmp = queue.poll();
 			String category = null;
-
+			// use MatchMap to match tmp label's value with value stored in the map
+			// then determine which category tmp node belongs to
 			for (Map.Entry<String, Double> entry : MatchMap.entrySet()) {
 				if (entry.getValue() == tmp.getData(label)) {
 					category = entry.getKey().toString();
 				}
 			}
 
+			// consider all nodes in the queue, if some of them are in the same
+			// category just update that category's score(similarity) otherwise
+			// add a new record in the map
 			double similarity = tmp.getSimilarity();
 			if (map.containsKey(category)) {
 				similarity += map.get(category);
@@ -159,7 +172,7 @@ public class KNN {
 		}
 		double score = Integer.MIN_VALUE; // total score for rs
 
-		// find the label with highest score
+		// using the map find the label with highest score
 		for (Map.Entry<String, Double> entry : map.entrySet()) {
 			String key = entry.getKey().toString();
 			Double value = entry.getValue();
@@ -171,7 +184,8 @@ public class KNN {
 		return rs;
 	}
 
-	// input the queue to find the category
+	// input the queue to find the category for those attributes are real class
+	// simply use the average value of total values of nodes in queue
 	private Double calCategory(PriorityQueue<Data> queue, String label, int k) {
 		Double rs = 0.00;
 		// put label and total score pair into map
@@ -182,6 +196,10 @@ public class KNN {
 		return rs / k;
 	}
 
+	// considering weight for different attributes and similarity matrix for
+	// some attributes (send parameter from main method)
+	// determine whether the attribute is real firstly and calculate similarity
+	// accordingly and times according weight from HashMap
 	public double calSimilarity1(Data d1, Data d2, String label,
 			HashMap<String, Double> weight,
 			HashMap<String, double[][]> matrixMap) {

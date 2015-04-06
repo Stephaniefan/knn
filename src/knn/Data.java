@@ -6,10 +6,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Data class contains attributes for an entry/record It stores data in a
- * HashMap:
- * */
+/*ebiz Task 11
+ * Author: Wei Dai Ningxin Fan
+ * Data class contains attributes for an entry/record 
+ * It stores data in a HashMap:
+  */
 
 public class Data {
 	// key: attribute name

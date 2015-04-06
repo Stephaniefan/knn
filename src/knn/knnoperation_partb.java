@@ -1,14 +1,17 @@
 package knn;
 
+/*ebiz Task 11
+ * Author: Wei Dai Ningxin Fan
+ * class to do major operation for task B
+ */
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class knnoperation_partb {
+	static DecimalFormat df = new DecimalFormat("0.00");
 
 	public static void main(String[] args) {
-
-		// DataSet testData = new DataSet();
-		// testData.readDataFromFile("testProdIntro.real.arff");
 
 		DataSet trainData = new DataSet();
 		trainData.readDataFromFile("trainProdIntro.binary.arff");
@@ -37,32 +40,28 @@ public class knnoperation_partb {
 
 		HashMap<String, Double> matrix = new HashMap<String, Double>();
 		matrix.put("Service_type", 1.0);
-		matrix.put("Customer", 1.0);
-		matrix.put("Monthly_fee", 1.0);
-		matrix.put("Advertisement_budget", 1.0);
-		matrix.put("Size", 1.0);
+		matrix.put("Customer", 1.5);
+		matrix.put("Monthly_fee", 5.0);
+		matrix.put("Advertisement_budget", 10.0);
+		matrix.put("Size", 0.5);
 		matrix.put("Promotion", 1.0);
 		matrix.put("Interest_rate", 1.0);
-		matrix.put("Period", 1.0);
+		matrix.put("Period", 1.5);
 
 		knn.normalization(trainData, minmaxmap); // do normalization
 
-		System.out.println("accuracy"
-				+ accuracy(trainData, 10, knn, matrix, matrixMap));
+		System.out
+				.println("accuracy"
+						+ df.format(accuracy(trainData, 10, knn, matrix,
+								matrixMap) * 100) + "%");
 
-		//
-		// knn.normalization(testData, minmaxmap);
-		// // ArrayList<String> attributeList = ;
-		// for (Data d : testData.getData()) {
-		// // for (String attribute : testData.getAttributeList()) {
-		// // System.out.println("d" + d);
-		// String label = knn.knn(trainData, d);
-		// System.out.print(d + "     ");
-		// System.out.println(label);
-		// // }
-		// }
 	}
 
+	/*
+	 * @param datalist:arraylist of all data
+	 * 
+	 * @return shuffled data.
+	 */
 	public static ArrayList<Data> shuffle(ArrayList<Data> datalist) {
 		ArrayList<Data> random = new ArrayList<Data>();
 		for (int i = 0; i < datalist.size(); i++) {
@@ -79,6 +78,19 @@ public class knnoperation_partb {
 		return random;
 	}
 
+	/*
+	 * @param dataset: reading from data
+	 * 
+	 * @param weight: different weight for each attributes
+	 * 
+	 * @param k folds for cross validation
+	 * 
+	 * @param knn : to call the main knn method
+	 * 
+	 * @param matrix Map: similarity matrix for those symbolic attributes
+	 * 
+	 * @return: the accuracy of cross validation
+	 */
 	public static double accuracy(DataSet dataSet, int k, KNN knn,
 			HashMap<String, Double> weight,
 			HashMap<String, double[][]> matrixMap) {
@@ -91,7 +103,7 @@ public class knnoperation_partb {
 		String objective = dataSet.getObjective();
 		HashMap<String, Double> map = dataSet.getAttributeMap()
 				.get(dataSet.getObjective()).getValueSet();
-		System.out.println(dataSet.size());
+		// System.out.println(dataSet.size());
 		for (int i = 0; i < k; i++) {
 			correct = 0;
 			ArrayList<Data> test = new ArrayList<Data>();
@@ -116,11 +128,15 @@ public class knnoperation_partb {
 						totalcorrect++;
 						correct++;
 					}
-				}else{
-					System.out.print("test.get(x).getData(objective).toString()"+test.get(x).getData(objective).toString());
-					String a = knn.knn(tmp,test.get(x), weight, 5, matrixMap);
-					System.out.print("knn.knn(tmp,test.get(x), weight, 5, matrixMap)"+ a);
-					
+				} else {
+					System.out
+							.print("test.get(x).getData(objective).toString()"
+									+ test.get(x).getData(objective).toString());
+					String a = knn.knn(tmp, test.get(x), weight, 5, matrixMap);
+					System.out
+							.print("knn.knn(tmp,test.get(x), weight, 5, matrixMap)"
+									+ a);
+
 					if (test.get(x).getData(objective).toString().equals(a)) {
 						totalcorrect++;
 						correct++;
@@ -130,8 +146,8 @@ public class knnoperation_partb {
 			}
 			dataSet.setData(stroage);
 			accuracy += correct / test.size();
-			System.out.println("round " + i + "     accuracy is   " + correct
-					/ test.size());
+			System.out.println("round " + i + "     accuracy is   "
+					+ df.format(correct / test.size() * 100) + "%");
 		}
 		System.out.println("total" + total);
 		System.out.println("correct" + totalcorrect);

@@ -3,7 +3,8 @@ package knn;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
+/*ebiz Task 11
+ * Author: Wei Dai Ningxin Fan
  * Class to hold attribute data
  * */
 public class Attribute {

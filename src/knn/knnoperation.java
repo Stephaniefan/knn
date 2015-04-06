@@ -1,9 +1,15 @@
 package knn;
 
+
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-
+/*ebiz Task 11
+ * Author: Wei Dai Ningxin Fan
+ * class to do major operation
+ */
 public class knnoperation {
+	static DecimalFormat df = new DecimalFormat("0.00");
 
 	public static void main(String[] args) {
 
@@ -32,25 +38,28 @@ public class knnoperation {
 		matrix.put("Type", 1.0);
 		matrix.put("LifeStyle", 0.05);
 		matrix.put("Vacation", 8.0);
-		matrix.put("eCredit", 25.0);
-		matrix.put("salary", 13.0);
+		matrix.put("eCredit", 30.0);
+		matrix.put("salary", 20.0);
 		matrix.put("property", 1.0);
 
 		knn.normalization(trainData, minmaxmap); // do normalization
-
-		 //System.out.println("accuracy" + accuracy(trainData, 10, knn, matrix, matrixMap));
-
-		//
-	    knn.normalization(testData, minmaxmap);
-		// // ArrayList<String> attributeList = ;
+		knn.normalization(testData, minmaxmap);
 		for (Data d : testData.getData()) {
-			// for (String attribute : testData.getAttributeList()) {
-			// System.out.println("d" + d);
-			String label = knn.knn(trainData, d, matrix, 3, matrixMap);
-			System.out.print(d + "     ");
+			// System.out.println(testData.getData().size());
+
+			String label = null;
+			for (String attribute : testData.getAttributeList()) {
+				label = knn.knn(trainData, d, matrix, 3, matrixMap);
+			}
+			System.out.print(d);
 			System.out.println(label);
-			// }
 		}
+
+		// System.out
+		// .println("accuracy"
+		// + df.format(accuracy(trainData, 10, knn, matrix,
+		// matrixMap) * 100) + "%");
+
 	}
 
 	public static ArrayList<Data> shuffle(ArrayList<Data> datalist) {
@@ -69,6 +78,7 @@ public class knnoperation {
 		return random;
 	}
 
+	@SuppressWarnings("unchecked")
 	public static double accuracy(DataSet dataSet, int k, KNN knn,
 			HashMap<String, Double> weight,
 			HashMap<String, double[][]> matrixMap) {
@@ -78,46 +88,65 @@ public class knnoperation {
 		int totalcorrect = 0;
 		double accuracy = 0.00;
 		double total = 0, correct = 0;
-		
-		int totalnum = 0;
-		
+
+		// int totalnum = 0;
+
 		String objective = dataSet.getObjective();
 		HashMap<String, Double> map = dataSet.getAttributeMap()
 				.get(dataSet.getObjective()).getValueSet();
 		for (int i = 0; i < k; i++) {
+			// System.out.println(stroage.size() / k);
 			correct = 0;
 			ArrayList<Data> test = new ArrayList<Data>();
 			ArrayList<Data> train = new ArrayList<Data>();
 
 			train = (ArrayList<Data>) dataSet.getData().clone();
+			if (i == k - 1) {
+				for (int j = stroage.size() - 1; j >= (stroage.size() / k) * i; j--) {
+					test.add(train.remove(j));
 
-			for (int j = (stroage.size() / k) * (i + 1); j >= (stroage.size() / k)
-					* i; j--) {
-				test.add(train.remove(j));
-				
-				totalnum++;
-				
-			}
-			DataSet tmp = new DataSet();
-			tmp = dataSet;
-			tmp.setData(train);
-
-			for (int x = 0; x < test.size(); x++) {
-				if (test.get(x).getData(objective) == map.get(knn.knn(tmp,
-						test.get(x), weight, 3, matrixMap))) {
-					totalcorrect++;
-					correct++;
+					// totalnum++;
 				}
-				total++;
+				DataSet tmp = new DataSet();
+				tmp = dataSet;
+				tmp.setData(train);
+				for (int x = 0; x < test.size(); x++) {
+					if (test.get(x).getData(objective) == map.get(knn.knn(tmp,
+							test.get(x), weight, 3, matrixMap))) {
+						totalcorrect++;
+						correct++;
+					}
+					total++;
+				}
+				accuracy += correct / test.size();
+			} else {
+				for (int j = (stroage.size() / k) * (i + 1) - 1; j >= (stroage
+						.size() / k) * i; j--) {
+					test.add(train.remove(j));
+
+					// totalnum++;
+
+				}
+				DataSet tmp = new DataSet();
+				tmp = dataSet;
+				tmp.setData(train);
+
+				for (int x = 0; x < test.size(); x++) {
+					if (test.get(x).getData(objective) == map.get(knn.knn(tmp,
+							test.get(x), weight, 3, matrixMap))) {
+						totalcorrect++;
+						correct++;
+					}
+					total++;
+				}
+				dataSet.setData(stroage);
+				accuracy += correct / test.size();
 			}
-			dataSet.setData(stroage);
-			accuracy += correct / test.size();
-			System.out.println("round " + i + "     accuracy is   " + correct
-					/ test.size());
+			System.out.println("round " + i + "     accuracy is   "
+					+ df.format(correct / test.size() * 100) + "%");
 		}
 		System.out.println("total" + total);
 		System.out.println("correct" + totalcorrect);
-		System.out.println("totalnum" + totalnum);
 		return accuracy / k;
 	}
 }
